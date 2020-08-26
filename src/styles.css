@@ -1,0 +1,58 @@
+/* You can add global styles to this file, and also import other style files */
+
+.p-font {
+    font-family: Josefin Sans;
+}
+
+.p-text-color {
+    color: #0d519c;
+}
+
+.p-color {
+    color: #0d519c;
+}
+
+.middle-y {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.middle-x {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.text-white {
+    color: #ffffff;
+}
+
+@media only screen and (max-width: 414px) {
+    .mobileDisplay-Block-Content {
+        display: block;
+    }
+    .mobileDisplay-None-Content {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 415px) {
+    .desktopDisplay-Block-Content {
+        display: block;
+    }
+    .desktopDisplay-None-Content {
+        display: none;
+    }
+}
+
+.invalid-text {
+    color: #ff3547;
+    font-size: 14px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.border-project {
+    border: 1px solid #0d519c;
+}

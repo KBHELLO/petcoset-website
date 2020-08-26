@@ -1,0 +1,319 @@
+<article class="p-font border-top border-bottom" style="min-height: 75vh;background: #fff;">
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="p-3">
+                    <div class="form-div">
+                        <label class="p-color"><span>Selected service</span></label>
+                        <input type="text" placeholder="Drop in visit" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-8 col-sm-12">
+                <form [formGroup]="parentForm">
+                    <!-- BOOKING INFORMATION BLOCK START -->
+                    <div class="p-3" [style.display]="displayCount === 0 ? 'block':'none'">
+                        <span class="p-color" style="line-height: 2;">Pet details</span>
+                        <div class="row">
+                            <div class="col-md-4 col-lg-4 col-12" *ngFor="let pet of petDetails; let i = index">
+                                <div class="card mb-3 p-2 pointer p-color" (mousedown)="selectedPet(i)" [ngClass]="{'border-project': selectedPetIndex === i}">
+                                    <div class="d-flex justify-content-start">
+                                        <div class="pet-block">
+                                            <img src="../../../../assets/images/customer_form_icon/Group 1.png" alt="" srcset="" class="pet-img">
+                                        </div>
+                                        <div style="width: 80%;">
+                                            <h6 class="card-title mb-0 font-weight-bold">{{pet.pet_name}}</h6>
+                                            <span style="font-size: 12px;">{{pet.breed_name}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 invalid-text mb-3" *ngIf="petSelectError">
+                                {{petSelectError}}
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label class="p-color">Preferred location</label>
+                                <input type="text" formControlName="preferred_location" placeholder="Type your location" />
+                                <div class="invalid-text" *ngIf="preferredLocationErrorText">
+                                    {{preferredLocationErrorText}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-6 text-center">
+                                <img src={{oneTimeImgSrc}} alt="" class="w-100 pointer" (mousedown)="imgSelection('one')">
+                            </div>
+                            <div class="col-6 text-center">
+                                <img src={{repeateImgSrc}} alt="" class="w-100 pointer" (mousedown)="addBookingDetails()">
+                            </div>
+                        </div>
+                        <div class="px-3">
+                            <div class="row border-project rounded mb-3 py-4">
+                                <div class="col-md-4 col-lg-4 col-sm-12">
+                                    <label class="p-color">Booking date</label>
+                                    <input type="date" formControlName="start_date" [min]="currentDate">
+                                </div>
+                                <div class="col-md-4 col-lg-4 col-sm-12">
+                                    <label class="p-color">Drop off time</label>
+                                    <input type="time" formControlName="pick_up_time_hrs">
+                                </div>
+                                <div class="col-md-4 col-lg-4 col-sm-12">
+                                    <label class="p-color"> Pick up time</label>
+                                    <input type="time" formControlName="dropOffTime">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="px-3" formArrayName="bookingDetails" *ngFor="let item of bookingDetailsFormArray.controls; let i=index">
+                            <i class="fa fa-window-close cross pointer" aria-hidden="true" (mousedown)="removeItem(i)"></i>
+                            <div class="row border-project rounded mb-3 py-4" [formGroupName]="i">
+                                <div class="col-md-4 col-lg-4 col-sm-12 mb-3">
+                                    <label class="p-color">Booking Date</label>
+                                    <input type="date" formControlName="start_date" [min]="currentDate">
+                                </div>
+                                <div class="col-md-4 col-lg-4 col-sm-12 mb-3">
+                                    <label class="p-color">Drop off time</label>
+                                    <input type="time" formControlName="pick_up_time_hrs">
+                                </div>
+                                <div class="col-md-4 col-lg-4 col-sm-12 mb-3">
+                                    <label class="p-color">Pick up time</label>
+                                    <input type="time" formControlName="dropOffTime">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="bookingDetailsError">
+                            <div class="col-12">
+                                <div class="invalid-text">
+                                    {{bookingDetailsError}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-center my-4">
+                                <!-- <button class="close-btn-project" (mousedown)="changeFirstBlock('filter')">Filter</button> -->
+                                <button class="btn-project mx-2" (mousedown)="changeFirstBlock('next')">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- BOOKING INFORMATION BLOCK END -->
+                    <!-- ADVANCE FILTER BLOCK START -->
+                    <div [style.display]="displayCount === 1 ? 'block' : 'none'">
+                        <div class="mt-4 p-3">
+                            <span style="line-height: 2;" class="font-weight-bold p-color">Housing Condition</span>
+                            <div class="row p-color">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input type="checkbox" formControlName="has_house" value="1" style="zoom: 1.3; vertical-align: sub; margin-right: 3%;"><span class="user-font-size-14">Has house (exclude flats)</span>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input type="checkbox" formControlName="is_pets_allowed_on_furniture" value="1" style="zoom: 1.3; vertical-align: sub; margin-right: 3%;"><span class="user-font-size-14">Pets allowed on furniture</span>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input type="checkbox" formControlName="is_non_smoking" value="1" style="zoom: 1.3; vertical-align: sub; margin-right: 3%;"><span class="user-font-size-14">Non smoking room</span>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input type="checkbox" formControlName="has_fenced_garden" value="1" style="zoom: 1.3; vertical-align: sub; margin-right: 3%;"><span class="user-font-size-14">House with a fenced garden</span>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input type="checkbox" formControlName="is_pets_allowed_on_bed" value="1" style="zoom: 1.3; vertical-align: sub; margin-right: 3%;"><span class="user-font-size-14">Pets allowed on bed</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 p-3">
+                            <span class="font-weight-bold p-color" style="line-height: 2;">Pets in home</span>
+                            <div class="row p-color">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input type="checkbox" formControlName="does_own_dog" value="1" style="zoom: 1.3; vertical-align: sub; margin-right: 3%;"><span class="user-font-size-14">Do not have cat</span>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input type="checkbox" formControlName="does_own_cat" value="1" style="zoom: 1.3; vertical-align: sub; margin-right: 3%;"><span class="user-font-size-14">Do not have dog</span>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input type="checkbox" formControlName="does_own_caged_animals" value="1" style="zoom: 1.3; vertical-align: sub; margin-right: 3%;"><span class="user-font-size-14">Do not have any caged animal</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 p-3">
+                            <span class="font-weight-bold p-color" style="line-height: 2;">Children in the home</span>
+                            <div class="row p-color">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input type="checkbox" formControlName="child_age" value="1" style="zoom: 1.3; vertical-align: sub; margin-right: 3%;"><span class="user-font-size-14">No child</span>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input type="checkbox" formControlName="child_age" value="1" style="zoom: 1.3; vertical-align: sub; margin-right: 3%;"><span class="user-font-size-14">No child of 0-5 years</span>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input type="checkbox" formControlName="child_age" value="1" style="zoom: 1.3; vertical-align: sub; margin-right: 3%;"><span class="user-font-size-14">No child of 6~12 years</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 p-3">
+                            <span class="font-weight-bold p-color" style="line-height: 2;">Additional Service</span>
+                            <div class="row p-color">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input type="checkbox" formControlName="is_bathing_provided" value="1" style="zoom: 1.3; vertical-align: sub; margin-right: 3%;"><span class="user-font-size-14">Bathing / Nail clipping</span>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <input type="checkbox" formControlName="is_first_aid" value="1" style="zoom: 1.3; vertical-align: sub; margin-right: 3%;"><span class="user-font-size-14">First aid</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row my-5">
+                            <div class="col-12 text-center">
+                                <button class="btn-project mx-1" (mousedown)="changeAdvanceFilterBlock()">Next</button>
+                                <button class="close-btn-project" (mousedown)="back()">Back</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ADVANCE FILTER BLOCK END -->
+                    <!-- PET INFORMATION BLOCK START -->
+                    <div [style.display]="displayCount === 2 ? 'block' : 'none'">
+                        <div class="my-3 px-3">
+                            <!-- SELECT VENDOR BLOCK START -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <label class="p-color">Message</label><br>
+                                    <span class="p-color">Share a little info about your pet you want to share with
+                                        us</span><br>
+                                    <textarea formControlName="extraMessage"></textarea>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-lg-6 col-12 mt-5" *ngIf="isSubscription">
+                                    <div class="mt-3 p-3">
+                                        <span class="p-color" style="line-height: 2;">Payment Method</span>
+                                        <div class="row p-color">
+                                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                                <input type="checkbox" formControlName="subscription_id" value="1" style="zoom: 1.3; vertical-align: sub; margin-right: 3%;"><span style="font-size: 12px;">Subscription</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-5 p-3" style="font-size: 14px;">
+                                    <p *ngIf="isSubscription">Please check subscription if you already purchased subscription.</p>
+                                    <p>If you want to purchase subscription then <a routerLink="/subscription"><b>click here</b></a></p>
+                                    <p class="font-weight-bold">Please complete your payment once your service request become approved.</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12" *ngIf="noVendorText">{{noVendorText}}</div>
+                                <div class="col-12 pet-border mb-3" *ngFor="let vendor of vendorList; let i = index">
+                                    <div class="row">
+                                        <div class="col-md-6 col-lg-6 col-6 text-left">
+                                            <div class="p-3" *ngIf="!noVendorText">
+                                                <h5 class="card-title mb-0 p-color">
+                                                    {{vendor.first_name | titlecase}} {{vendor.last_name | titlecase}}
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-6 col-6 p-3 text-right">
+                                            <p>
+                                                <span class="font-weight-bold">INR
+                                                    {{vendor.service_charge}}</span>&nbsp;<small>per
+                                                    visit</small><br>
+                                                <button class="book-now-button mt-2" (mousedown)="selectedVendor(i)">Book Now</button>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-12 text-center">
+                                    <button class="close-btn-project" (mousedown)="backFilter()">Back</button>
+                                </div>
+                            </div>
+                            <!-- SELECT VENDOR BLOCK END -->
+                        </div>
+                    </div>
+                    <!-- PET INFORMATION BLOCK END -->
+                    <!--PAYMENT BLOCK START-->
+                    <div [style.display]="displayCount === 3 ? 'block' : 'none'">
+                        <div class="row mt-3 p-3" *ngIf="selectedPetList">
+                            <div class="col-12 p-color">
+                                <label class="p-color"><span>Pet Details</span></label>
+                            </div>
+                            <div class="col-6" style="font-size: 12px;">Pet Name: {{selectedPetList.pet_name}}</div>
+                            <div class="col-6" style="font-size: 12px;">Pet Type: {{selectedPetList.pet_type}}</div>
+                            <div class="col-6" style="font-size: 12px;">Breed Name: {{selectedPetList.breed_name}}</div>
+                            <div class="col-12 pet-border mt-2"></div>
+                        </div>
+                        <div class="row mt-3 p-3" *ngIf="selectedVendorId">
+                            <div class="col-12 p-color">
+                                <label class="p-color"><span>Your Pet Friend Details</span></label>
+                            </div>
+                            <div class="col-6" style="font-size: 12px;">Name: {{selectedVendorId['first_name'] | titlecase}} {{selectedVendorId['last_name'] | titlecase}}</div>
+                            <div class="col-6" style="font-size: 12px;">Price: INR {{selectedVendorId['service_charge']}}
+                            </div>
+                            <div class="col-12 pet-border mt-2"></div>
+                        </div>
+                        <div class="mb-3 mt-4 border-project rounded" style="font-size: 12px;">
+                            <div class="row p-3">
+                                <div class="col-12 mb-2 pet-border">
+                                    <span class="p-color">Billing Details</span>
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-6">
+                                    Booking Date:
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-6">
+                                    {{parentForm.controls.start_date.value | date: 'dd-MM-yyyy'}}
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-6">
+                                    Pick up time:
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-6">
+                                    {{parentForm.controls.pick_up_time_hrs.value + ':00'}}
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-6">
+                                    Drop off time:
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-6">
+                                    {{parentForm.controls.dropOffTime.value + ':00'}}
+                                </div>
+                            </div>
+                            <div class="row p-3" *ngFor="let bookingItem of bookingList; let i = index;">
+                                <div class="col-12 mb-2 pet-border">
+                                    <span class="p-color">Billing Details</span>
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-6">
+                                    Booking Date:
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-6">
+                                    {{bookingItem.start_date | date: 'dd-MM-yyyy'}}
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-6">
+                                    Pick up time:
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-6">
+                                    {{bookingItem.pick_up_time_hrs + ':00'}}
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-6">
+                                    Drop off time
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-6">
+                                    {{bookingItem.dropOffTime + ':00'}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-right">
+                                <button class="btn-payment mt-2" (mousedown)="confirmRequest()">Book Now</button>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-5 p-3" style="font-size: 12px;">
+                            <p>
+                                We the pet owners in spite of our wish cannot take our pets with us everywhere. So they need a home and someone to take care of for some days. PCS has launched their flagship product to provide you a peaceful vacation and your pet a homely environment
+                                while you are away. PCS helps you to find a suitable home and a caregiver with the Petcoset Care service. This service provides,
+                            </p>
+                            <p>Compensation to the pet owner if some physical damage happen to the pet (as treatment to the pet up to a certain amount)</p>
+                            <p>Compensation to the pet boarder if some physical damage happen to the boarder (treatment cost; approved only after photographic or video graphic evidence)</p>
+                            <p>Video footage at two hour difference and unlimited photos of your beloved pet</p>
+                            <p>Direct damages to a certain third person caused by Petcoset pet</p>
+                            <p>Compensation will only be provided if the service cost is above a certain amount</p>
+                        </div>
+                    </div>
+                    <!--PAYMENT BLOCK END-->
+                </form>
+            </div>
+        </div>
+    </div>
+</article>
